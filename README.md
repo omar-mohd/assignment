@@ -24,7 +24,7 @@ All passwords are `password123`.
 | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Editing     | Create, rename (click the title), rich text: bold, italic, underline, H1–H3, bulleted and numbered lists, **6 fonts** (Arial, Georgia, Times New Roman, Courier New, Verdana, Trebuchet MS), undo/redo, keyboard shortcuts. Autosaves 0.8 s after you stop typing (spinner "Saving…", then ✓ "Saved"). |
 | Dashboard   | **Search** by title and an **"Owned by anyone / Owned by me / Not owned by me"** filter. |
-| File upload | **.txt, .md, .docx → new editable document** (button or drag-and-drop on the dashboard). Max 5 MB. Headings, bold/italic and lists are kept. Other types are rejected with a clear message.                                     |
+| File upload | **.txt, .md, .docx → new editable document** (button or drag-and-drop on the dashboard). Max 4 MB. Headings, bold/italic and lists are kept. Other types are rejected with a clear message.                                     |
 | Sharing     | The owner shares by email as **Editor** or **Viewer**, can change a role or revoke access. The dashboard separates **My documents** from **Shared with me**. Viewers get a read-only editor; only the owner can share or delete. |
 | Persistence | Postgres. Content is stored as sanitized HTML, so formatting survives refreshes. Sharing is stored in a `document_shares` table.                                                                                                 |
 | Concurrency | Every save carries a version number. If someone else saved first you get a conflict banner (**Load their version** / **Keep mine**) instead of a silent overwrite. |
@@ -68,7 +68,13 @@ npm test
 
 ## Deploy
 
-`render.yaml` is a Render Blueprint: **Render → New → Blueprint → select this repo**. It creates a free web service plus a free Postgres database and generates `SESSION_SECRET`. Note that Render's free Postgres expires after 30 days. Any Node host plus any Postgres works: set `DATABASE_URL` and `SESSION_SECRET`, build with `npm run build`, start with `npm start`.
+The live demo runs on **Vercel (Hobby) + Neon Postgres**. Both are free and need no credit card.
+
+1. Create a Neon project and copy its connection string (`…/neondb?sslmode=require`).
+2. Import this repo in Vercel. `vercel.json` already sets the build (`npm run build`), the static output (`client/dist`) and the routing: `/api/*` goes to the Express app in `api/index.js` running as one serverless function, and every other path goes to the React app.
+3. Add the environment variables `DATABASE_URL` (Neon) and `SESSION_SECRET` (any long random string), then deploy. Tables and demo users are created on first start.
+
+**Alternatives:** any long-running Node host works with `npm run build` + `npm start` and the same two variables. `render.yaml` is a Render Blueprint for that route, but Render may ask for a card.
 
 ## Project layout
 
@@ -81,7 +87,6 @@ test/          API tests
 ## Known limitations
 
 - No keystroke-level co-editing: others' changes arrive on save (within a few seconds), not character by character. Simultaneous edits are detected as conflicts, not merged.
-- Presence is kept in server memory, so it's correct for one instance only (fine for this deployment).
 - Demo auth only (seeded users, no sign-up or password reset).
 - Import only creates a new document. It doesn't merge into an existing one, and file attachments aren't stored.
 - Images, tables and comments aren't supported.

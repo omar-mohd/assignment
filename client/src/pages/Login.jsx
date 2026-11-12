@@ -40,7 +40,7 @@ export default function Login() {
             <input
               type="email"
               value={email}
-              placeholder="example@ajaia.test"
+              placeholder="example@test.com"
               onChange={(e) => setEmail(e.target.value)}
               autoComplete="username"
               required

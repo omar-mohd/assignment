@@ -71,7 +71,8 @@ async function listShares(db, docId) {
 
 const canEdit = (role) => role === 'owner' || role === 'editor';
 
-export function createApp({ db, secret, isProd = false, clientDir, presence = createPresence() }) {
+export function createApp({ db, secret, isProd = false, clientDir }) {
+  const presence = createPresence(db);
   const app = express();
   app.disable('x-powered-by');
   app.use(express.json({ limit: '2mb' }));
@@ -232,9 +233,9 @@ export function createApp({ db, secret, isProd = false, clientDir, presence = cr
   // can also notice saves made by other people without a full reload.
   api.post('/documents/:id/presence', auth, async (req, res) => {
     const doc = await loadDocForUser(db, req.params.id, req.user.id);
-    presence.beat(doc.id, req.user, { typing: req.body?.typing === true });
+    await presence.beat(doc.id, req.user, { typing: req.body?.typing === true });
     res.json({
-      users: presence.list(doc.id, req.user.id),
+      users: await presence.list(doc.id, req.user.id),
       version: doc.version,
       updated_at: doc.updated_at,
       updated_by_name: doc.updated_by_name,
@@ -242,7 +243,7 @@ export function createApp({ db, secret, isProd = false, clientDir, presence = cr
   });
 
   api.delete('/documents/:id/presence', auth, async (req, res) => {
-    presence.leave(req.params.id, req.user.id);
+    await presence.leave(req.params.id, req.user.id);
     res.status(204).end();
   });
 

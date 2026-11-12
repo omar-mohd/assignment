@@ -48,6 +48,15 @@ CREATE TABLE IF NOT EXISTS document_versions (
   saved_at    TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 CREATE INDEX IF NOT EXISTS document_versions_doc_idx ON document_versions(document_id, saved_at DESC);
+
+-- Presence heartbeats (who has a document open right now).
+CREATE TABLE IF NOT EXISTS document_presence (
+  document_id TEXT NOT NULL REFERENCES documents(id) ON DELETE CASCADE,
+  user_id     INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  last_seen   TIMESTAMPTZ NOT NULL DEFAULT now(),
+  last_typed  TIMESTAMPTZ,
+  PRIMARY KEY (document_id, user_id)
+);
 `;
 
 export const DEMO_PASSWORD = 'password123';

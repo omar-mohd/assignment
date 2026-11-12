@@ -5,7 +5,7 @@ import Header from '../components/Header.jsx';
 import Dropdown from '../components/Dropdown.jsx';
 
 const ACCEPT = '.txt,.md,.docx';
-const MAX_MB = 5;
+const MAX_MB = 4;
 const OWNER_FILTERS = [
   { value: 'any', label: 'Owned by anyone' },
   { value: 'me', label: 'Owned by me' },

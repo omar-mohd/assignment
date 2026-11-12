@@ -9,7 +9,7 @@
 | Architecture note | `ARCHITECTURE.md` |
 | AI workflow note | `AI_WORKFLOW.md` |
 | Screenshots | `screenshots/` |
-| Deployment config | `render.yaml` |
+| Deployment config | `vercel.json` + `api/index.js` (Vercel + Neon Postgres); `render.yaml` as an alternative |
 | Automated tests | `test/api.test.js` (`npm test`, 14 tests) |
 
 ## Test accounts

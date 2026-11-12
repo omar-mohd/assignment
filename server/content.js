@@ -41,7 +41,7 @@ const SANITIZE_OPTIONS = {
 };
 
 export const MAX_CONTENT_BYTES = 1_000_000; // 1 MB of HTML per document
-export const MAX_UPLOAD_BYTES = 5 * 1024 * 1024; // 5 MB per file
+export const MAX_UPLOAD_BYTES = 4 * 1024 * 1024; // 4 MB per file (stays under Vercel's 4.5 MB request limit)
 export const SUPPORTED_EXTENSIONS = ['.txt', '.md', '.docx'];
 
 export function sanitizeContent(html) {

@@ -34,6 +34,7 @@ Real issues caught during review and verification, all fixed before shipping:
 | Auth context lived in `main.jsx` | Circular import between pages and entry point | Moved to `auth.jsx` |
 | Toolbar button component defined inside render | Remounts every render | Hoisted to module scope |
 | Sanitizer edit for fonts (script-based find/replace) | Prettier had reformatted the tag list, so the replacement silently didn't apply. Fonts would have been stripped on save | Spotted on review and applied by hand. A test now checks the font allowlist (kept: Georgia; stripped: Comic Sans + `color`) |
+| Presence stored in server memory | Fine on one server, but wrong once the deploy target became serverless (Vercel), where instances don't share memory | Moved presence into a Postgres table. Same API, same tests |
 | Markdown export prepended `# Title` | Docs that already start with an H1 got the title twice. Caught by reading the exported file in the browser test | Export the body as is |
 
 ## How correctness, UX and reliability were verified
@@ -41,6 +42,7 @@ Real issues caught during review and verification, all fixed before shipping:
 - **Automated:** `npm test` runs 14 API integration tests on a fresh in-memory Postgres (PGlite): auth, persistence plus sanitization, validation, 409 conflicts, the sharing and permission matrix, and .md/.docx/.txt import with negative cases.
 - **Testing the tests:** I deliberately broke the permission check (`canEdit = () => true`) and confirmed the suite fails, then restored it. A passing test suite only counts if it can fail.
 - **Real browser:** Playwright scripts in headless Chrome ran the full flow. They covered login, create, format, rename, reload (formatting persisted), share, the share error for an unknown email, viewer read-only, and .docx import through the file picker. A **3-user concurrent session** (Alice/Bob/Carol) exercised the conflict banner. For the stretch features, two live sessions checked that each side sees the other's avatar, "Bob is typing…" appears, Bob's save shows up in Alice's editor automatically, a restore propagates back to Bob, and the exported .md file is correct. I reviewed the screenshots for UX, not only assertions.
+- **Production database path:** the tests use embedded Postgres, so I also ran the Vercel entry point (`api/index.js`) against a real Postgres wire-protocol server through the `pg` driver. Health, login (it confirmed the cookie is `Secure; HttpOnly; SameSite=Lax`), save with fonts, presence, history, import and the 4 MB limit all passed.
 - **Deployed build:** re-ran the main flow against the live URL after deploy.
 
 ## Takeaway
