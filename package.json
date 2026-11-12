@@ -1,0 +1,50 @@
+{
+  "name": "ajaia-docs",
+  "version": "1.0.0",
+  "description": "Ajaia Docs: a lightweight collaborative document editor",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest run",
+    "dev": "concurrently -k -n api,web -c blue,green \"node --watch server/index.js\" \"vite\"",
+    "build": "vite build",
+    "start": "node server/index.js",
+    "format": "prettier --write server client/src test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@electric-sql/pglite": "^0.5.16",
+    "cookie-parser": "^1.4.7",
+    "express": "^5.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "mammoth": "^1.13.0",
+    "marked": "^18.2.0",
+    "multer": "^2.5.0",
+    "pg": "^8.23.1",
+    "sanitize-html": "^2.18.2",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@tiptap/extension-text-style": "^3.33.1",
+    "@tiptap/extensions": "^3.33.1",
+    "@tiptap/pm": "^3.33.1",
+    "@tiptap/react": "^3.33.1",
+    "@tiptap/starter-kit": "^3.33.1",
+    "@vitejs/plugin-react": "^6.3.0",
+    "concurrently": "^10.0.7",
+    "docx": "^9.15.3",
+    "prettier": "^3.10.1",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-router-dom": "^7.18.5",
+    "supertest": "^7.3.2",
+    "turndown": "^7.2.5",
+    "vite": "^8.3.8",
+    "vitest": "^5.1.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
